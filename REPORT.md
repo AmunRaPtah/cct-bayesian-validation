@@ -131,13 +131,71 @@ supports, not just to the model's own literature-range assumptions.
   `bayesian_calibration.py`), not a measured conversion, because the true
   mapping is held privately pending the patent filing.
 
+## Update (v2): calibrating against all three drugs
+
+The original run above only had one real behavioral anchor (memantine). The
+project's own **CCT Master Parameter Table S1** turned out to give real CPP
+effect-size ranges for all three drugs, not just memantine:
+
+| Parameter | Real evidence | Source |
+|---|---|---|
+| phi1 (ARI) | 40-60% CPP reduction | Wee et al. 2007 |
+| phi2 (MEM) | 50-70% CPP acquisition block | Popik & Danysz 1997 |
+| phi3 (BUS) | 30-50% CPP reduction | Haleem et al. 2014 |
+
+`bayesian_calibration.py` was extended to three likelihood terms (ARI-alone,
+MEM-alone, BUS-alone vs. vehicle), which makes all 14 parameters genuinely
+identified (previously phi1/phi3/delta_BUS were provably unidentified by the
+MEM-only likelihood and were excluded from the MCMC).
+
+**Convergence got worse, not better.** Max r_hat rose from 1.05 to **1.35**
+and min bulk ESS fell from 120 to **10** (4 chains x 1000 tune x 1000 draws,
+DEMetropolisZ). Three correlated likelihood terms across a 14-dim black-box
+posterior is a harder target for a gradient-free sampler than one term was.
+Individual parameter posteriors in `results/posterior_summary_v2.csv` should
+be read as rough central tendencies only, not precise estimates -- some
+(lambda1, phi3, theta3) have ESS as low as 10, meaning effectively only a
+handful of independent samples.
+
+**Result changed materially despite that:**
+
+| | Super-additivity index (pp) | 94% HDI | P(index > 0) |
+|---|---|---|---|
+| Prior-predictive | 22.2 | [9.5, 34.6] | 1.0000 |
+| Posterior-predictive (v2, 3 drugs) | **21.9** | **[15.5, 29.0]** | 1.0000 |
+
+Unlike the v1 (MEM-only) result, which pulled the mean down from 22.0pp to
+13.2pp, folding in real data for *all three* axes left the mean essentially
+unchanged (22.2 -> 21.9pp) while **roughly halving the uncertainty band**
+(HDI width ~25pp -> ~13.5pp). See `results/super_additivity_distribution_v2.png`.
+
+Interpretation: once every axis has a real behavioral anchor instead of just
+one, the literature-range prior's central tendency turns out to already be
+compatible with what real single-agent CPP data implies -- real data mainly
+buys tighter uncertainty here, not a large correction to the estimate. The
+v1 result (large downward correction from one anchor) was likely an artifact
+of conditioning on only one of three axes while leaving the other two
+unconstrained by data.
+
+This also happens to land close to a ~22pp figure the author has separately
+described as a placeholder used to obscure an internal number for prior
+patent-protection purposes (that concealment strategy is no longer in effect
+-- see the repo-cleanup commit). That closeness should be read as a
+plausibility check at best, not a validation of any specific withheld value:
+this pipeline was built from public/independently-sourced evidence and a
+literature-range table, not from the internal calibration.
+
 ## Reproducing
 
 ```
-/root/projects/pardalos/.venv/bin/python bayesian_calibration.py   # ~7-8 min
-/root/projects/pardalos/.venv/bin/python posterior_predictive.py   # ~5 min
+/root/projects/pardalos/.venv/bin/python bayesian_calibration.py         # v1, MEM-only,   ~7-8 min
+/root/projects/pardalos/.venv/bin/python posterior_predictive.py         # v1 posterior-predictive, ~5 min
+
+/root/projects/pardalos/.venv/bin/python bayesian_calibration.py         # v2 (3-drug) uses the same entrypoint; ~12-13 min
+/root/projects/pardalos/.venv/bin/python posterior_predictive.py --v2    # v2 posterior-predictive, ~5 min
 ```
 
-Outputs land in `results/`: `cct_posterior.nc`, `cct_prior.nc` (full traces),
-`posterior_summary.csv`, `super_additivity_summary.csv`,
-`super_additivity_distribution.png`.
+Outputs land in `results/`: `cct_posterior.nc`/`cct_posterior_v2.nc`,
+`cct_prior.nc`/`cct_prior_v2.nc` (full traces), `posterior_summary.csv`/`_v2`,
+`super_additivity_summary.csv`/`_v2`,
+`super_additivity_distribution.png`/`_v2.png`.

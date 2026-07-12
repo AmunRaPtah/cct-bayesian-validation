@@ -27,27 +27,23 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from priors import STRUCTURAL, IDENTIFIED_PARAM_NAMES, UNIDENTIFIED_BY_MEM_LIKELIHOOD, scipy_frozen_dists
+from priors import STRUCTURAL, IDENTIFIED_PARAM_NAMES
 import cct_model as cm
 
 SEED = 20260712
 N_POSTERIOR_DRAWS = 800  # subsample for the 8-condition factorial (8x ODE solves each)
 
-# phi1, phi3, delta_BUS were not part of the MCMC (unidentified by the MEM
-# likelihood -- see priors.py). Here, where ARI/BUS doses ARE exercised, we
-# reintroduce them by drawing independently from their own literature-range
-# priors and merging with each (posterior or prior) draw of the identified
-# parameters. This keeps them at "prior-only" status, exactly as the
-# evidence supports.
-_UNIDENTIFIED_DISTS = {name: scipy_frozen_dists()[name] for name in UNIDENTIFIED_BY_MEM_LIKELIHOOD}
+# All 14 parameters are now identified by the 3-drug likelihood in
+# bayesian_calibration.py (v2), so every draw comes straight from the
+# prior/posterior trace -- no more merge-in of independently-drawn
+# "unidentified" parameters (that was only needed for the earlier MEM-only
+# calibration).
 
 
-def param_dict_from_row(row, rng):
+def param_dict_from_row(row, rng=None):
     p = dict(STRUCTURAL)
     for name in IDENTIFIED_PARAM_NAMES:
         p[name] = float(row[name])
-    for name, dist in _UNIDENTIFIED_DISTS.items():
-        p[name] = float(dist.rvs(random_state=rng))
     return p
 
 
@@ -98,20 +94,21 @@ def summarize(name, arr):
     }
 
 
-def main():
+def main(prior_path='results/cct_prior.nc', posterior_path='results/cct_posterior.nc',
+         out_suffix=''):
     rng = np.random.default_rng(SEED)
 
     print("Running PRIOR-predictive factorial simulation "
           f"({N_POSTERIOR_DRAWS} draws from literature-range priors)...")
     prior_res = run_super_additivity_distribution(
-        'results/cct_prior.nc', 'prior', N_POSTERIOR_DRAWS, rng)
+        prior_path, 'prior', N_POSTERIOR_DRAWS, rng)
     prior_summary = summarize("PRIOR-predictive super-additivity index (pp, as fraction)",
                                prior_res['super_additivity_index'])
 
     print("\nRunning POSTERIOR-predictive factorial simulation "
-          f"({N_POSTERIOR_DRAWS} draws, conditioned on real MEM behavioral datum)...")
+          f"({N_POSTERIOR_DRAWS} draws, conditioned on real behavioral data)...")
     post_res = run_super_additivity_distribution(
-        'results/cct_posterior.nc', 'posterior', N_POSTERIOR_DRAWS, rng)
+        posterior_path, 'posterior', N_POSTERIOR_DRAWS, rng)
     post_summary = summarize("POSTERIOR-predictive super-additivity index (pp, as fraction)",
                               post_res['super_additivity_index'])
 
@@ -130,12 +127,14 @@ def main():
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     plt.tight_layout()
-    plt.savefig('results/super_additivity_distribution.png', dpi=180)
+    fig_path = f'results/super_additivity_distribution{out_suffix}.png'
+    plt.savefig(fig_path, dpi=180)
     plt.close()
-    print("\nSaved: results/super_additivity_distribution.png")
+    print(f"\nSaved: {fig_path}")
 
     import csv
-    with open('results/super_additivity_summary.csv', 'w', newline='') as f:
+    csv_path = f'results/super_additivity_summary{out_suffix}.csv'
+    with open(csv_path, 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['distribution', 'mean', 'sd', 'hdi94_low', 'hdi94_high', 'p_positive', 'n'])
         w.writerow(['prior_predictive', prior_summary['mean'], prior_summary['sd'],
@@ -144,10 +143,14 @@ def main():
         w.writerow(['posterior_predictive', post_summary['mean'], post_summary['sd'],
                     post_summary['hdi_low'], post_summary['hdi_high'],
                     post_summary['p_positive'], post_summary['n']])
-    print("Saved: results/super_additivity_summary.csv")
+    print(f"Saved: {csv_path}")
 
     return prior_summary, post_summary
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    if '--v2' in sys.argv:
+        main('results/cct_prior_v2.nc', 'results/cct_posterior_v2.nc', out_suffix='_v2')
+    else:
+        main()

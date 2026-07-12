@@ -56,16 +56,13 @@ STRUCTURAL = {
 
 FREE_PARAM_NAMES = list(PRIOR_SPECS.keys())
 
-# phi1, phi3, delta_BUS are analytically unidentified by the MEM-consolidation
-# likelihood used in bayesian_calibration.py: the vehicle and MEM-alone
-# conditions both set ARI=0 and BUS=0, which exactly zeroes out every term
-# these three parameters appear in (phi1 only multiplies ARI, phi3 only
-# multiplies BUS, delta_BUS only multiplies BUS). Including them in the MCMC
-# wastes sampler dimensions with zero likelihood gradient and hurts mixing.
-# They are sampled from prior only and merged in at the posterior-predictive
-# stage (see posterior_predictive.py), which does exercise ARI/BUS doses.
-UNIDENTIFIED_BY_MEM_LIKELIHOOD = ['phi1', 'phi3', 'delta_BUS']
-IDENTIFIED_PARAM_NAMES = [n for n in FREE_PARAM_NAMES if n not in UNIDENTIFIED_BY_MEM_LIKELIHOOD]
+# All 14 parameters are identified once bayesian_calibration.py uses three
+# likelihood terms (ARI-alone, MEM-alone, BUS-alone vs. vehicle -- see
+# evidence.py ARI_CPP_EVIDENCE / MEM_CONSOLIDATION_EVIDENCE / BUS_CPP_EVIDENCE),
+# unlike the earlier MEM-only version where phi1/phi3/delta_BUS were provably
+# unidentified. IDENTIFIED_PARAM_NAMES is kept as an alias (= all free params)
+# so bayesian_calibration.py / posterior_predictive.py don't need branching.
+IDENTIFIED_PARAM_NAMES = FREE_PARAM_NAMES
 
 
 def scipy_frozen_dists():

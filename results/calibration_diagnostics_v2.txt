@@ -1,0 +1,2 @@
+max_r_hat=1.35
+min_ess_bulk=10.0

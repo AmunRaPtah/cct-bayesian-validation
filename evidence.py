@@ -30,29 +30,38 @@ GATE_EVIDENCE = {
 }
 
 # ---------------------------------------------------------------------------
-# 2. Memantine consolidation-blockade of cocaine-CPP  ->  informs phi2, delta_MEM
+# 2. Single-agent CPP effect sizes, all three drugs -> informs phi1, phi2,
+#    phi3, delta_MEM, delta_BUS via real behavioral likelihood targets
 # ---------------------------------------------------------------------------
-# Source: "Common influences of non-competitive NMDA receptor antagonists on
-# the consolidation and reconsolidation of cocaine-cue memory" (Psychopharmacology
-# 2012, PMID 22829432 / PMC3917839). Memantine 6.5 mg/kg given post-training
-# (consolidation window) COMPLETELY blocked formation of cocaine-CPP -- treated
-# drug animals failed to develop any place preference vs. saline controls,
-# which did. Dose 6.5 mg/kg falls inside the CCT model's proposed Axis-2 dose
-# range (3-10 mg/kg rodent-equivalent), so this is used as a direct behavioral
-# calibration target for the model's MEM-alone condition.
-#
-# "Completely blocked" in the original paper is categorical (no CPP developed
-# at all vs. clear CPP in controls), not a precise numeric percentage -- so we
-# encode this as a fractional reduction target with an uncertainty band wide
-# enough to reflect that imprecision, rather than pretending false precision.
+# Source: CCT Master Parameter Table S1 (Olutogun, supplement to the CCT
+# trilogy), the project's own authoritative literature-range table, citing:
+#   - phi1 (ARI): 40-60% CPP reduction -- Wee et al. 2007
+#   - phi2 (MEM): 50-70% CPP acquisition block -- Popik & Danysz 1997
+#   - phi3 (BUS): 30-50% CPP reduction -- Haleem et al. 2014
+# Each range is treated as an approximate 95% interval (mean = midpoint,
+# sd = range_width / 4) and used as a Gaussian likelihood target on the
+# model's fractional single-agent encoding-reduction output (R_ARI, R_MEM,
+# R_BUS respectively), computed by running the ODE forward for that drug
+# alone vs. vehicle. This lets all three drug-efficacy axes be identified by
+# real behavioral data, not just memantine.
+ARI_CPP_EVIDENCE = {
+    'citation': 'Wee et al. 2007 (via CCT Master Parameter Table S1)',
+    'pct_reduction_range': (40, 60),
+    'R_ARI_target_mean': 0.50, 'R_ARI_target_sd': 0.05,
+}
 MEM_CONSOLIDATION_EVIDENCE = {
-    'citation': 'Cox, Meyers et al. Psychopharmacology 2012, PMC3917839',
-    'dose_mgkg': 6.5,
-    # target: fractional reduction in encoding (R_MEM) for MEM-alone vs vehicle.
-    # "complete block" -> R_MEM close to 1; wide sd because it's a categorical
-    # (present/absent CPP) result, not a measured percentage.
-    'R_MEM_target_mean': 0.93,
-    'R_MEM_target_sd': 0.08,
+    'citation': 'Popik & Danysz 1997 (via CCT Master Parameter Table S1); '
+                'corroborated directionally by Cox/Meyers et al. Psychopharmacology '
+                '2012, PMC3917839 (6.5 mg/kg memantine completely blocked cocaine-CPP '
+                'consolidation -- a categorical, not percentage, result, so used only '
+                'as directional support, not the primary numeric target)',
+    'pct_block_range': (50, 70),
+    'R_MEM_target_mean': 0.60, 'R_MEM_target_sd': 0.05,
+}
+BUS_CPP_EVIDENCE = {
+    'citation': 'Haleem et al. 2014 (via CCT Master Parameter Table S1)',
+    'pct_reduction_range': (30, 50),
+    'R_BUS_target_mean': 0.40, 'R_BUS_target_sd': 0.05,
 }
 
 # CAVEAT (explicitly not fed into the likelihood, reported as a limitation):
