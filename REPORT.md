@@ -2,7 +2,8 @@
 
 **Date:** 2026-07-12
 **Author:** pipeline built by Claude for Eniola Olutogun, applied to the CCT model trilogy
-(Olutogun E, 2026 — Papers 1-3, patent-pending; public code at
+(Olutogun E, 2026 — Papers 1-3, preprints in preparation, no patent filing being
+pursued; public code at
 [AmunRaPtah/cct-simulation-](https://github.com/AmunRaPtah/cct-simulation-))
 
 ## Why this exists
@@ -111,12 +112,18 @@ supports, not just to the model's own literature-range assumptions.
 
 ## What this does *not* establish
 
-- It does not validate the *magnitude* reported in the manuscript (E_final =
-  0.855, super-additivity = 12.8 pp) — those used privately-held calibrated
-  coefficients not available here. (Note the posterior-predictive mean of
-  13.2 pp is strikingly close to the manuscript's reported 12.8 pp, but this
-  should be read as a plausibility check, not confirmation — the calibration
-  target and the manuscript's fitting procedure are different.)
+- There is no published/confirmed magnitude to validate against. Earlier
+  drafts of this report (and the public code repo, before its 2026-07-12
+  cleanup commit `b52ffec`) described E_final = 0.855 and super-additivity =
+  12.8 pp as manuscript results withheld pending a patent filing. That filing
+  is not being pursued, and the author has confirmed those specific figures
+  were unconfirmed decoy values, not real calibrated results — they have
+  since been removed from the public repo rather than left implying a
+  finished, hidden result. The closeness of this pipeline's 13.2 pp posterior
+  mean to that discarded 12.8 pp figure is therefore not meaningful and
+  should not be read as a plausibility check, corroboration, or validation of
+  any kind. (Table S1 does report one real documented anchor for this
+  quantity — see the v2 update below.)
 - It does not resolve the memantine LTP-enhancement vs. CPP-consolidation-
   blockade conflict.
 - It does not touch buspirone's Axis-3 parameters with real data at all —
@@ -128,8 +135,8 @@ supports, not just to the model's own literature-range assumptions.
   NUTS) would tighten this if pursued further.
 - The mg/kg -> normalized-EC50 dose mapping used to place the real memantine
   evidence into the model's units is an explicit assumption (documented in
-  `bayesian_calibration.py`), not a measured conversion, because the true
-  mapping is held privately pending the patent filing.
+  `bayesian_calibration.py`), not a measured conversion — no such mapping has
+  been published or established.
 
 ## Update (v2): calibrating against all three drugs
 
@@ -177,13 +184,31 @@ v1 result (large downward correction from one anchor) was likely an artifact
 of conditioning on only one of three axes while leaving the other two
 unconstrained by data.
 
-This also happens to land close to a ~22pp figure the author has separately
-described as a placeholder used to obscure an internal number for prior
-patent-protection purposes (that concealment strategy is no longer in effect
--- see the repo-cleanup commit). That closeness should be read as a
-plausibility check at best, not a validation of any specific withheld value:
-this pipeline was built from public/independently-sourced evidence and a
-literature-range table, not from the internal calibration.
+Earlier text here compared this result to a ~12.8pp figure that had been
+described, in manuscript drafts and the public code repo (before its
+2026-07-12 cleanup commit `b52ffec`, "Remove stale patent-pending language
+and unconfirmed decoy figures"), as a real value withheld pending a patent
+filing. That filing is not being pursued, and the author has since confirmed
+the 0.855/12.8pp figures were unconfirmed decoy numbers, not actual
+calibrated manuscript results -- so there was never a real withheld value to
+be close to, and that comparison has been removed.
+
+The one real documented anchor for the super-additivity magnitude is **Table
+S1** itself: ≈10-16pp, the range found across a 6x6 gamma_g x theta_g
+sensitivity grid with the positive direction holding in all 36 tested
+combinations (Olutogun 2026b). That's a range across a parameter grid, not a
+single fitted point estimate, so it isn't directly comparable to this
+pipeline's posterior mean either -- but it's worth flagging plainly: the v1
+posterior mean (13.2pp) falls inside that range, while the **v2 posterior
+mean (21.9pp) sits above its upper bound (16pp)**. That is a genuine
+discrepancy between this pipeline's 3-drug calibration and the manuscript
+supplement's own documented sensitivity range, not something resolved by the
+evidence used here. Candidate explanations (not adjudicated by this
+pipeline): the 6x6 grid may have swept a narrower region of gamma_g/theta_g
+than this calibration's posterior occupies, the v2 MCMC's poor convergence
+(ESS as low as 10) may be inflating the tail, or the two "super-additivity
+index" definitions may not be computed identically. Worth resolving before
+treating v2's 21.9pp as more reliable than v1's 13.2pp.
 
 ## Reproducing
 
