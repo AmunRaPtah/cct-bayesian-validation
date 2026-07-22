@@ -43,7 +43,7 @@ doesn't, how much does the CCT architecture's qualitative prediction survive?*
    parameters, 11 are analytically identified by the one real datum whose
    units match the model's actual output — fractional reduction in cumulative
    encoding probability for memantine given alone during the consolidation
-   window (Cox/Meyers et al. 2012, PMC3917839: 6.5 mg/kg memantine completely
+   window (Alaghband & Marshall 2012, PMC3917839: 6.5 mg/kg memantine significantly
    blocked cocaine-CPP consolidation). The other 3 (phi1, phi3, delta_BUS) are
    provably irrelevant to this likelihood (their only terms are multiplied by
    ARI=0 or BUS=0 in the vehicle/MEM-alone conditions) and are excluded from
@@ -59,12 +59,14 @@ doesn't, how much does the CCT architecture's qualitative prediction survive?*
 
 Full detail in `evidence.py`. Headline points:
 
-- **Strongest anchor:** memantine 6.5-10 mg/kg completely blocked cocaine-CPP
-  consolidation/reconsolidation (Cox/Meyers et al. 2012) — falls inside the
-  model's proposed 3-10 mg/kg range, and is the one behavioral endpoint used
-  for likelihood calibration here.
+- **Strongest anchor:** memantine 6.5-10 mg/kg significantly blocked cocaine-CPP
+  consolidation/reconsolidation (Alaghband & Marshall 2012, Psychopharmacology
+  226(4):707-719, PMC3917839) — falls inside the model's proposed 3-10 mg/kg
+  range, and is the one behavioral endpoint used for likelihood calibration
+  here.
 - **A real, unresolved tension:** in freely-moving rats, memantine 5-10 mg/kg
-  *enhanced* (not suppressed) hippocampal CA1 LTP (PMID 26119223) — directly
+  *enhanced* (not suppressed) hippocampal CA1 LTP (Ma, Mufti & Leung 2015,
+  Neurobiology of Aging 36(9):2544-2554, PMID 26119223) — directly
   conflicting with a naive "memantine suppresses Axis-2 amplitude" reading at
   the electrophysiological level. This calibration used the behavioral
   endpoint (matches the model's actual output variable) and treats the LTP

@@ -51,10 +51,11 @@ ARI_CPP_EVIDENCE = {
 }
 MEM_CONSOLIDATION_EVIDENCE = {
     'citation': 'Popik & Danysz 1997 (via CCT Master Parameter Table S1); '
-                'corroborated directionally by Cox/Meyers et al. Psychopharmacology '
-                '2012, PMC3917839 (6.5 mg/kg memantine completely blocked cocaine-CPP '
-                'consolidation -- a categorical, not percentage, result, so used only '
-                'as directional support, not the primary numeric target)',
+                'corroborated directionally by Alaghband & Marshall, Psychopharmacology '
+                '2012, 226(4):707-719, PMC3917839 (6.5 mg/kg memantine significantly '
+                'blocked cocaine-CPP consolidation -- a categorical, not percentage, '
+                'result, so used only as directional support, not the primary numeric '
+                'target)',
     'pct_block_range': (50, 70),
     'R_MEM_target_mean': 0.60, 'R_MEM_target_sd': 0.05,
 }
