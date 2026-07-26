@@ -1,0 +1,8 @@
+{
+  "N": 512,
+  "total_evaluations": 15360,
+  "n_failed": 0,
+  "S2_gamma_g_theta_g": -0.0031877880656556766,
+  "S2_conf_gamma_g_theta_g": 0.018947396831811892,
+  "frac_positive": 1.0
+}

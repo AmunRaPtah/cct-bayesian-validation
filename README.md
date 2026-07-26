@@ -21,6 +21,9 @@ See `REPORT.md` for methodology, evidence sources, results, and limitations.
   (scipy least_squares/trf, 25 restarts) against the same v2 likelihood.
 - `sobol_sensitivity.py` — global Sobol sensitivity analysis (SALib) over all
   14 parameters' full literature-range bounds, independent of MCMC convergence.
+- `sobol_second_order.py` — second-order Sobol index for the gate parameter
+  pair (gamma_g x theta_g) specifically, testing Section 3.3's analytic
+  cross-partial claim against a variance-based interaction measure.
 - `phi2_zero_robustness.py` — robustness check with MEM's amplitude-suppression
   channel (phi2) pinned at 0, addressing the Ma et al. 2015 LTP-enhancement
   tension.
@@ -40,5 +43,6 @@ python posterior_predictive.py
 python fim_sloppiness.py
 python map_diagnostic.py
 python sobol_sensitivity.py 1024 4
+python sobol_second_order.py 512 4
 python phi2_zero_robustness.py
 ```
