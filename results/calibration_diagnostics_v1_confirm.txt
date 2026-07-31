@@ -1,0 +1,6 @@
+max_r_hat=1.02
+min_ess_bulk=361.0
+chains=6
+tune=4000
+draws=4000
+elapsed_s=2671.8941192626953

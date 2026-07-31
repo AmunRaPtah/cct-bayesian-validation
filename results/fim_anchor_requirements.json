@@ -1,0 +1,155 @@
+{
+  "method": "FIM rank at literature-midpoint parameter vector, central finite differences, assumed target SD=0.05 for all hypothetical pairwise/triple anchors (no real data yet -- placeholder matching existing single-agent anchor SD convention)",
+  "n_free_params": 14,
+  "candidate_anchor_sets": [
+    {
+      "anchor_set": "current (3 single-agent anchors)",
+      "conditions": [
+        "ARI",
+        "MEM",
+        "BUS"
+      ],
+      "n_conditions": 3,
+      "achieved_fim_rank": 3,
+      "naive_upper_bound_rank": 3,
+      "fully_identifies_all_14": false,
+      "eigenvalues_desc": [
+        2514.103657501579,
+        631.4645507504991,
+        398.53123844626174,
+        3.6472932816574846e-13,
+        9.202929473487989e-14,
+        8.263158710720921e-14,
+        1.6428444028596692e-14,
+        5.290249709241998e-15,
+        2.312263665690386e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "anchor_set": "+ 1 pairwise (ARI+MEM)",
+      "conditions": [
+        "ARI",
+        "MEM",
+        "BUS",
+        "ARI+MEM"
+      ],
+      "n_conditions": 4,
+      "achieved_fim_rank": 4,
+      "naive_upper_bound_rank": 4,
+      "fully_identifies_all_14": false,
+      "eigenvalues_desc": [
+        2722.3790458471467,
+        656.3345822977772,
+        398.6297436356416,
+        18.78116839372677,
+        1.5601626899436053e-13,
+        6.93777571384282e-14,
+        4.4624100709689074e-14,
+        2.0502766038550956e-14,
+        8.295016315475765e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "anchor_set": "+ all 3 pairwise",
+      "conditions": [
+        "ARI",
+        "MEM",
+        "BUS",
+        "ARI+MEM",
+        "ARI+BUS",
+        "MEM+BUS"
+      ],
+      "n_conditions": 6,
+      "achieved_fim_rank": 6,
+      "naive_upper_bound_rank": 6,
+      "fully_identifies_all_14": false,
+      "eigenvalues_desc": [
+        2990.287439483273,
+        735.9290441320524,
+        415.7732566032297,
+        24.10579476687151,
+        3.3442702352328486,
+        0.04575809030732346,
+        2.284798317699271e-13,
+        1.0327156781665327e-13,
+        2.8082843974342947e-14,
+        3.0900752908051106e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "anchor_set": "+ triple combo only (no pairwise)",
+      "conditions": [
+        "ARI",
+        "MEM",
+        "BUS",
+        "ARI+MEM+BUS"
+      ],
+      "n_conditions": 4,
+      "achieved_fim_rank": 4,
+      "naive_upper_bound_rank": 4,
+      "fully_identifies_all_14": false,
+      "eigenvalues_desc": [
+        2523.6806000755705,
+        631.7126214563547,
+        398.7435804826158,
+        1.268911639495056,
+        6.739927506942657e-13,
+        5.986168433972769e-14,
+        3.2855925487512164e-14,
+        1.810320597510165e-14,
+        2.080378174678111e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "anchor_set": "+ all 3 pairwise + triple (all 7 conditions)",
+      "conditions": [
+        "ARI",
+        "MEM",
+        "BUS",
+        "ARI+MEM",
+        "ARI+BUS",
+        "MEM+BUS",
+        "ARI+MEM+BUS"
+      ],
+      "n_conditions": 7,
+      "achieved_fim_rank": 7,
+      "naive_upper_bound_rank": 7,
+      "fully_identifies_all_14": false,
+      "eigenvalues_desc": [
+        3000.183519519209,
+        736.1004400402385,
+        415.97809336055195,
+        24.965301421593477,
+        3.3713194663354242,
+        0.14765697171520695,
+        0.045499487017691784,
+        2.960413496272401e-13,
+        9.599396694290529e-14,
+        4.9968492976150874e-14,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

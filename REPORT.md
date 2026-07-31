@@ -212,17 +212,54 @@ than this calibration's posterior occupies, the v2 MCMC's poor convergence
 index" definitions may not be computed identically. Worth resolving before
 treating v2's 21.9pp as more reliable than v1's 13.2pp.
 
+## Update (v3): the v1 (13.2pp) figure above was itself a convergence artifact
+
+The "genuine discrepancy" flagged in the v2 update above turned out to have
+a different resolution than any of its candidate explanations. The v1
+result reported throughout this file (13.2pp, from `bayesian_calibration.py`
+at 4 chains x 1200 tune x 1200 draws) passed `r_hat`/ESS diagnostics but its
+posterior-predictive `R_MEM_sim` averaged 0.785 against a calibration target
+of 0.60 (SD 0.05): 3.7 SD off, a value a correctly-mixed posterior under
+that likelihood should not produce. The chains had converged to each other
+without converging to the true posterior, a known DEMetropolisZ failure mode
+with population-based proposals under short tuning.
+
+Rerunning at 6 chains x 4000 tune x 4000 draws (`bayesian_calibration_v1_longrun.py`),
+twice independently with different seeds to rule out a single-run fluke,
+both reproduce the calibration target closely (`R_MEM_sim` 0.599 and 0.604)
+and agree with each other on the super-additivity index to within 0.1pp:
+**21.8pp** (94% HDI [11.0, 33.5], n=1600 pooled across both runs), superseding
+the 13.2pp figure used throughout this file above the "Update (v3)" heading.
+This closely matches v2's 21.9pp, resolving the discrepancy this section
+originally flagged: v1's short run was the outlier, not v2. Full detail and
+the corrected results table are in `CCT_Paper2_clean.md` Section 5.5.
+
+A follow-up global-Sobol run restricted to the corrected v1 posterior's own
+94% HDI (`sobol_sensitivity_posterior.py`) confirms the earlier
+prior-range Sobol finding (`lambda1`/`r_E` dominate magnitude variance,
+gate parameters negligible) is not an artifact of prior width: the same
+ranking holds under the much narrower posterior ranges. A separate
+structural-identifiability extension (`fim_anchor_requirements.py`) shows
+CPP-outcome behavioral anchors alone, regardless of how many of the 7
+possible dose combinations are tested, can identify at most 7 of the 14 free
+parameters, a design-space ceiling, not a matter of insufficient anchor
+count.
+
 ## Reproducing
 
 ```
-/root/projects/pardalos/.venv/bin/python bayesian_calibration.py         # v1, MEM-only,   ~7-8 min
-/root/projects/pardalos/.venv/bin/python posterior_predictive.py         # v1 posterior-predictive, ~5 min
+/root/projects/pardalos/.venv/bin/python bayesian_calibration_v1_longrun.py --seed 20260712 --suffix longrun  # v1, corrected, ~38 min
+/root/projects/pardalos/.venv/bin/python bayesian_calibration_v1_longrun.py --seed 20260713 --suffix confirm  # v1, independent-seed confirmation, ~38 min
+/root/projects/pardalos/.venv/bin/python pool_full_condition_summary.py  # pools both v1 runs into the corrected Table 2
 
-/root/projects/pardalos/.venv/bin/python bayesian_calibration.py         # v2 (3-drug) uses the same entrypoint; ~12-13 min
+/root/projects/pardalos/.venv/bin/python bayesian_calibration.py         # v2 (3-drug), ~12-13 min
 /root/projects/pardalos/.venv/bin/python posterior_predictive.py --v2    # v2 posterior-predictive, ~5 min
+
+/root/projects/pardalos/.venv/bin/python sobol_sensitivity_posterior.py results/cct_posterior_v1_longrun.nc 1024 4  # Sobol under posterior
+/root/projects/pardalos/.venv/bin/python fim_anchor_requirements.py      # minimum-anchor-set analysis
 ```
 
-Outputs land in `results/`: `cct_posterior.nc`/`cct_posterior_v2.nc`,
-`cct_prior.nc`/`cct_prior_v2.nc` (full traces), `posterior_summary.csv`/`_v2`,
-`super_additivity_summary.csv`/`_v2`,
-`super_additivity_distribution.png`/`_v2.png`.
+Outputs land in `results/`: `cct_posterior_v1_longrun.nc`/`_v1_confirm.nc`,
+`cct_posterior_v2.nc` (full traces), `posterior_summary_v1_longrun.csv`/`_v1_confirm`/`_v2`,
+`full_condition_summary_v1_corrected.csv`, `sobol_sensitivity_posterior_summary.json`,
+`fim_anchor_requirements.json`.
