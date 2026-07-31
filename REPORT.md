@@ -1,7 +1,7 @@
 # CCT Model: Bayesian In-Silico Validation (No Wet-Lab Substitute)
 
 **Date:** 2026-07-12
-**Author:** pipeline built by Claude for Eniola Olutogun, applied to the CCT model trilogy
+**Author:** Eniola Olutogun, applied to the CCT model trilogy
 (Olutogun E, 2026 — Papers 1-3, preprints in preparation, no patent filing being
 pursued; public code at
 [AmunRaPtah/cct-simulation-](https://github.com/AmunRaPtah/cct-simulation-))
@@ -162,7 +162,7 @@ and min bulk ESS fell from 120 to **10** (4 chains x 1000 tune x 1000 draws,
 DEMetropolisZ). Three correlated likelihood terms across a 14-dim black-box
 posterior is a harder target for a gradient-free sampler than one term was.
 Individual parameter posteriors in `results/posterior_summary_v2.csv` should
-be read as rough central tendencies only, not precise estimates -- some
+be read as rough central tendencies only, not precise estimates: some
 (lambda1, phi3, theta3) have ESS as low as 10, meaning effectively only a
 handful of independent samples.
 
